@@ -1,0 +1,20 @@
+﻿<Window x:Class="projekt_roboty.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:projekt_roboty"
+        mc:Ignorable="d"
+        Title="Stol" Height="465.246" Width="406.26">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="83*"/>
+            <ColumnDefinition Width="315*"/>
+        </Grid.ColumnDefinitions>
+        <Canvas Name="canvas1" HorizontalAlignment="Left" Height="400" Background="Black" Margin="0,0,-2,0" VerticalAlignment="Top" Width="400" PreviewMouseDown="canvas1_PreviewMouseDown" Grid.ColumnSpan="2">
+            <Ellipse Name="bola" Canvas.Left="130" Canvas.Top="79" Width="20" Height="20" Fill="White"  />
+        </Canvas>
+        <TextBox Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="3,406,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331" Grid.ColumnSpan="2"/>
+
+    </Grid>
+</Window>

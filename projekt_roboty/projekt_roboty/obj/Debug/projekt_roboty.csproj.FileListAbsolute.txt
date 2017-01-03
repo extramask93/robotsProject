@@ -1,0 +1,64 @@
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.csprojResolveAssemblyReference.cache
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\MainWindow.g.cs
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\App.g.cs
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty_MarkupCompile.cache
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty_MarkupCompile.lref
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.exe.config
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.exe
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.pdb
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\MainWindow.baml
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.g.resources
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.Properties.Resources.resources
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.csproj.GenerateResource.Cache
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.exe
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.pdb
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\Stol.g.cs
+C:\Users\Jozek\documents\visual studio 2017\Projects\projekt_roboty\projekt_roboty\obj\Debug\Stol.baml
+E:\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.exe.config
+E:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.exe
+E:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.pdb
+E:\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.exe
+E:\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.pdb
+E:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.csprojResolveAssemblyReference.cache
+E:\projekt_roboty\projekt_roboty\obj\Debug\MainWindow.g.cs
+E:\projekt_roboty\projekt_roboty\obj\Debug\Stol.g.cs
+E:\projekt_roboty\projekt_roboty\obj\Debug\App.g.cs
+E:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty_MarkupCompile.cache
+E:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty_MarkupCompile.lref
+E:\projekt_roboty\projekt_roboty\obj\Debug\MainWindow.baml
+E:\projekt_roboty\projekt_roboty\obj\Debug\Stol.baml
+E:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.g.resources
+E:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.Properties.Resources.resources
+E:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.csproj.GenerateResource.Cache
+K:\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.exe.config
+K:\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.exe
+K:\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.pdb
+K:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.csprojResolveAssemblyReference.cache
+K:\projekt_roboty\projekt_roboty\obj\Debug\MainWindow.g.cs
+K:\projekt_roboty\projekt_roboty\obj\Debug\Stol.g.cs
+K:\projekt_roboty\projekt_roboty\obj\Debug\App.g.cs
+K:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty_MarkupCompile.cache
+K:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty_MarkupCompile.lref
+K:\projekt_roboty\projekt_roboty\obj\Debug\MainWindow.baml
+K:\projekt_roboty\projekt_roboty\obj\Debug\Stol.baml
+K:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.g.resources
+K:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.Properties.Resources.resources
+K:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.csproj.GenerateResource.Cache
+K:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.exe
+K:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.pdb
+F:\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.exe.config
+F:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.exe
+F:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.pdb
+F:\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.exe
+F:\projekt_roboty\projekt_roboty\bin\Debug\projekt_roboty.pdb
+F:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.csprojResolveAssemblyReference.cache
+F:\projekt_roboty\projekt_roboty\obj\Debug\MainWindow.g.cs
+F:\projekt_roboty\projekt_roboty\obj\Debug\Stol.g.cs
+F:\projekt_roboty\projekt_roboty\obj\Debug\App.g.cs
+F:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty_MarkupCompile.cache
+F:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty_MarkupCompile.lref
+F:\projekt_roboty\projekt_roboty\obj\Debug\MainWindow.baml
+F:\projekt_roboty\projekt_roboty\obj\Debug\Stol.baml
+F:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.g.resources
+F:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.Properties.Resources.resources
+F:\projekt_roboty\projekt_roboty\obj\Debug\projekt_roboty.csproj.GenerateResource.Cache

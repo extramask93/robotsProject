@@ -20,8 +20,8 @@ namespace projekt_roboty
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string IP = "127.0.0.1"; //TODO: wpisac dane servera 192.168.2.103", 50131
-        public const int PORT = 55056;
+        public const string IP = "192.168.2.104"; //TODO: wpisac dane servera 192.168.2.103", 50131
+        public const int PORT = 50131;
         public const byte robotNr = 1;
         private delegate void Handler(string str);
         enum Tryb:byte {sterowanie,monitorSterowanie, monitor};
@@ -34,8 +34,6 @@ namespace projekt_roboty
             ((App)Application.Current).connection.UIMessage += new EventHandler(connection_OnUIMessage);
             ((App)Application.Current).robotList = new AvaibleRobots();
             dataGrid1.ItemsSource= ((App)Application.Current).robotList.GetDataTable().DefaultView;
-       
-            //textBox1.Text = "asdad";
         }
 
    
@@ -95,6 +93,29 @@ namespace projekt_roboty
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
             byte[] command = { (byte)PacketType.disconnect };
+            ((App)Application.Current).connection.Send(Encoding.ASCII.GetString(command));
+        }
+
+        private void button_Click_2(object sender, RoutedEventArgs e)
+        {
+            float en1 = 0.0F;
+            try
+            {
+                en1 = Convert.ToSingle(textBox2.Text);
+            }
+            catch (Exception)
+            {
+                en1 = 0.0F;
+            }
+            float en2 = en1;
+            byte[] en1b = BitConverter.GetBytes(en1);
+            byte[] en2b = BitConverter.GetBytes(en2);
+            byte[] cmd = { (byte)PacketType.moveRequest };
+            List<byte> bb = new List<byte>();
+            bb.AddRange(cmd);
+            bb.AddRange(en1b);
+            bb.AddRange(en2b);
+            byte[] command = bb.ToArray();
             ((App)Application.Current).connection.Send(Encoding.ASCII.GetString(command));
         }
     }

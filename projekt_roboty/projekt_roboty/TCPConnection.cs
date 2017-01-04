@@ -106,7 +106,7 @@ namespace projekt_roboty
                     //byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
                     string temp="";
                     for (int j = 0; j < i; j++)
-                        temp += bytesToRead[j]+"|";
+                        temp += bytesToRead[j].ToString()+"|";
                     OnUIMessage(new TCPConnectionEventArgs("Receieved: " + temp));
                     inQueue.Add(data);
                 }
@@ -123,7 +123,10 @@ namespace projekt_roboty
                         string toSend = outQueue.Remove();
                         byte[] bytesToSend = new byte[toSend.Length];
                         bytesToSend=Encoding.ASCII.GetBytes(toSend);
-                        OnUIMessage(new TCPConnectionEventArgs("Sending: "));
+                        toSend = "";
+                        foreach (byte b in bytesToSend)
+                            toSend += b.ToString();
+                        OnUIMessage(new TCPConnectionEventArgs("Sending: "+toSend));
                         nwStream.Write(bytesToSend, 0, bytesToSend.Length);
                     }
                     Thread.Sleep(200);

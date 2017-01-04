@@ -11,13 +11,13 @@
             <Grid Background="#FFE5E5E5">
                 <Button Content="Initialize connection" HorizontalAlignment="Left" Margin="6,54,0,0" VerticalAlignment="Top" Width="139" Click="Button_Click_4"/>
                 <TextBox Name="textBox1" HorizontalAlignment="Left" Height="85" Margin="226,32,0,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" Width="273"/>
-                <Button Content="Send" HorizontalAlignment="Left" Margin="10,218,0,0" VerticalAlignment="Top" Width="75"/>
                 <TextBox Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="10,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="450"/>
                 <Button Content="Run Table" HorizontalAlignment="Left" Margin="424,260,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
                 <Button Content="Connect" HorizontalAlignment="Left" Height="22" Margin="6,24,0,0" VerticalAlignment="Top" Width="79" Click="Button_Click_1"/>
                 <Button Content="GetLocations" HorizontalAlignment="Left" Height="24" Margin="6,79,0,0" VerticalAlignment="Top" Width="139" Click="Button_Click"/>
                 <Label Content="Debug Window:" HorizontalAlignment="Left" Margin="226,3,0,0" VerticalAlignment="Top" Height="29" Width="221"/>
                 <Button Content="Disconnect" HorizontalAlignment="Left" Height="22" Margin="110,24,0,0" VerticalAlignment="Top" Width="79" Click="Button_Click_5"/>
+                <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="10,230,0,0" VerticalAlignment="Top" Width="75" Click="button_Click_2"/>
             </Grid>
         </TabItem>
         <TabItem Header="TabItem">

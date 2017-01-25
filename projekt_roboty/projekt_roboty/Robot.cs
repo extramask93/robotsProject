@@ -10,98 +10,60 @@ namespace projekt_roboty
 {
     public class Robot
     {
-    
-     
-        //Status
-        public UInt16 batteryLvl{get; set;}
-        public UInt16[] sensor { get; set; }
-        public Dictionary<byte, string> status;
-        public byte currentStatus{get; set;}
-        //control
-        public byte led { get; set; }
-        public sbyte leftEngine { get; set; }
-        public sbyte rightEngine{get; set;}
-        public float Ymm;
-        public float Xmm;
-        public double angle;
-        public int id;
-        public int flag;
+        public float leftEngine { get; set; }
+        public float rightEngine{get; set;}
+        public float Ymm { get; set; }
+        public float Xmm { get; set; }
+        public float angle { get; set; }
+        public int id { get; set; }
+        public byte detected { get; set; }
+        public byte controlable { get; set; }
 
-
-
-        public Robot()
+        public Robot(int id)
         {
-            status = new Dictionary<byte, string>();
-            sensor = new UInt16[5];
-            led = 0;
+            this.id = id;
             leftEngine=0;
-            rightEngine=0;
-            currentStatus=0;
-            status.Add(0,"Dane odczytane prawidłowo");
-            status.Add(1, "Brak znaku kończącego ramkę");
-            status.Add(2,"Ramka zbyt dluga");
-            status.Add(3, "Brak znaku rozpoczynającego bramkę");
-            status.Add(4, "Zła wielkośc ramki");
-            status.Add(5, "Błąd dekodowania danych");
-            status.Add(6, "Błąd połączenia z Robotem Polulu");
-         
+            rightEngine = 0;
+            controlable = 0;
+            detected = 0;     
         }
-        public static int getNumberOfAvaibleRobots(string tcpinfo)
+        public List<byte> encodeData()
         {
-            int robotsNumber;
-            if (tcpinfo.Substring(1, 2) != "49")
-                return 0;
-            robotsNumber=(int)((tcpinfo.Length-4)/2);
-            return robotsNumber;
+            List<byte> bb = new List<byte>();
+            byte[] en1b = BitConverter.GetBytes(leftEngine);
+            byte[] en2b = BitConverter.GetBytes(rightEngine);
+            bb.AddRange(en1b);
+            bb.AddRange(en2b);
+            return bb;
+            
         }
-        public string encodeData()
+        public void decodeData(ArraySegment<byte> segm)
         {
-            StringBuilder data = new StringBuilder();
-            data.Append('[');
-            data.Append(led.ToString("X2"));
-            data.Append(leftEngine.ToString("X2"));
-            data.Append(rightEngine.ToString("X2"));
-            data.Append(']');
-            return data.ToString();
-        }
-        public void decodeData(string data)
-        {
+            if (segm.Count != 14)
+                throw (new Exception("Data segment sent to decode has incorrent length of: "+segm.Count.ToString()));
+            byte[] data =segm.ToArray();
             try
             {
-                
-                currentStatus = byte.Parse(data.Substring(1, 2), System.Globalization.NumberStyles.HexNumber);
-                byte[] bat = new byte[2];
-                bat[0] = byte.Parse(data.Substring(3, 2), System.Globalization.NumberStyles.HexNumber);
-                bat[1] = byte.Parse(data.Substring(5, 2), System.Globalization.NumberStyles.HexNumber);
-                if (!BitConverter.IsLittleEndian)
-                    Array.Reverse(bat);
-                
-                batteryLvl = BitConverter.ToUInt16(bat,0);
-                int count = 0;
-                byte[] sen = new byte[2];
-                for (int i = 0; i < sensor.Length; i++, count += 4)
-                {
-                    sen[0] = byte.Parse(data.Substring(7 + count, 2), System.Globalization.NumberStyles.HexNumber);
-                    sen[1] = byte.Parse(data.Substring(7 + count + 2, 2), System.Globalization.NumberStyles.HexNumber);
-                    if (!BitConverter.IsLittleEndian)
-                    {
-                        Array.Reverse(sen);
-                        sensor[i] = BitConverter.ToUInt16(sen, 0);
-                    }
-                    else
-                        sensor[i] = BitConverter.ToUInt16(sen, 0);
-                }
+                segm = new ArraySegment<byte>(data, 0, 1);//get id
+                id = segm.Single();
+                segm = new ArraySegment<byte>(data, 1, 1); //get detection flag
+                detected = segm.Single();
+                segm = new ArraySegment<byte>(data, 2, 4); //get X coord
+                Xmm = BitConverter.ToSingle(segm.ToArray(), 0);
+                segm = new ArraySegment<byte>(data, 6, 4); //get Y coord
+                Ymm = BitConverter.ToSingle(segm.ToArray(), 0);
+                segm = new ArraySegment<byte>(data, 10, 4); //get angle
+                angle = BitConverter.ToSingle(segm.ToArray(), 0);
             }
-     
-            
-            catch (Exception e)
+            catch(Exception)
             {
-                //MessageBox.Show("Nierozpoznana odpowiedź robota"+e.ToString());
+                throw (new Exception("Error during parsing idividual robot position"));
             }
         }
+
+    }
  
-        }
+}
        
    
-    
-}
+

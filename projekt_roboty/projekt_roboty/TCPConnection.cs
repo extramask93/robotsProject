@@ -5,57 +5,77 @@ using System.Text;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 
 namespace projekt_roboty
 {
     public class TCPConnection
-    {
+    { 
         string server;
         Int32 port;
-        ConcurrentQueue<string> outQueue;
-        public ConcurrentQueue<string> inQueue;
+        public ConcurrentQueue<byte[]> outQueue;
+        public ConcurrentQueue<byte[]> inQueue;
+        EventWaitHandle sendHandle;
+        EventWaitHandle exitHandle;
+        WaitHandle[] handles;
         TcpClient client;
         NetworkStream nwStream;
         Thread writeThread;
         Thread readThread;
         bool _quit;
+        int flag;
         //event1
         public event EventHandler UIMessage;
         public void OnUIMessage(TCPConnectionEventArgs e)
         {
-            EventHandler uiMessage = UIMessage;
-            if (uiMessage != null)
-            {
-                uiMessage(this, e);
-            }
+            UIMessage?.Invoke(this, e);
         }
         //event2
         public event EventHandler MessageReceived;
         public void OnMessageReceived(TCPConnectionEventArgs e)
         {
-            
-            EventHandler messageReceived = MessageReceived;
-            if(messageReceived != null)
-            {
-                messageReceived(this, e);
-            }
+            MessageReceived?.Invoke(this, e);
         }
-        //
         public TCPConnection()
         {
-            inQueue = new ConcurrentQueue<string>(30);
-            outQueue = new ConcurrentQueue<string>(30);
+            sendHandle = new AutoResetEvent(false);
+            inQueue = new ConcurrentQueue<byte[]>(30,new AutoResetEvent(false)); 
+            outQueue =new ConcurrentQueue<byte[]>(30,sendHandle);
+            exitHandle = new AutoResetEvent(false);
             _quit = false;
+            handles = new WaitHandle[] {sendHandle, exitHandle};
 
         }
-        public void Send(string toSend)
+        public void Send(byte[] toSend)
         {
             outQueue.Add(toSend);
         }
+        public byte[] ReadIncomeQueue()
+        {
+            if (inQueue.Count() > 0)
+                return inQueue.Remove();
+            else 
+            return new byte[] {30}; 
+        }
+        public bool Connected()
+        {
+            if (client != null)
+                return client.Connected;
+            else
+                return false;
+        }
         public void Close()
         {
+            exitHandle.Set();
+            inQueue.Clear();
+            outQueue.Clear();
             _quit = true;
-            
+            if (readThread != null && Thread.CurrentThread.Name!="WriteThread")
+                readThread.Join();
+            if (client != null)
+                client.Close();
+            if(Thread.CurrentThread.Name!="WriteThread")
+            OnUIMessage(new TCPConnectionEventArgs("Disconnected"));
         }
 
         public void Connect(string server, Int32 port)
@@ -64,83 +84,117 @@ namespace projekt_roboty
             {
                 this.server = server;
                 this.port = port;
+                flag = 0;
                 _quit = false;
+                outQueue.Clear();
+                inQueue.Clear();
                 OnUIMessage(new TCPConnectionEventArgs("Connecting..."));
                 client = new TcpClient(server, port);
                 nwStream = client.GetStream();
-                OnUIMessage(new TCPConnectionEventArgs("Połączono z " + server + "port: " + port.ToString() + "    "));
-                writeThread = new Thread(() => Write());
-                writeThread.Start();
-                readThread = new Thread(() => Read());
-                readThread.Start();
+                OnUIMessage(new TCPConnectionEventArgs("Connected to " + server + " at port: " + port.ToString()));
+                try
+                {
+                    writeThread = new Thread(() => Write());
+                    writeThread.IsBackground = true;
+                    writeThread.Start();
+                }
+                catch(Exception)
+                {
+                    OnUIMessage(new TCPConnectionEventArgs("Cannot create TCP threads"));
+                    client.Close();
+                }
             }
-            catch (Exception e)
+            catch (SocketException e)
             {
-                OnUIMessage(new TCPConnectionEventArgs("Błąd w wątku TCP" + e.ToString()));
+                OnUIMessage(new TCPConnectionEventArgs("Server denied the connection, error code: " + e.ErrorCode.ToString()));
+            }
+            catch (Exception)
+            {
+                OnUIMessage(new TCPConnectionEventArgs("Wrong ip/port format"));
             }
         }
         public void Read()
         {
-            while (true && _quit != true)
+            try
             {
-                int i = 0;
-                int count = 0;
-                int N = 1;
-                byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-                //int id = nwStream.Read(bytesToRead, 0, 1);
-                //switch (bytesToRead[0])
-                //{
-                //    case 0:
-                //    case 6:
-                //    case 17: count = 0; break;
-                //    case 49:
-                //    case 33: count = 1 * N; break;
-                //    case 4: count = 14 * N; break;
-                //    default: break;
-                //}
-                while ((i = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize-1)) != 0)
+                nwStream.ReadTimeout = 1000;
+                while (!_quit)
                 {
-                    // Translate data bytes to a ASCII string.
-                    string data = System.Text.Encoding.ASCII.GetString(bytesToRead, 0, i);
-                    //throw 
-                    //byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
-                    string temp="";
-                    for (int j = 0; j < i; j++)
-                        temp += bytesToRead[j].ToString()+"|";
-                    OnUIMessage(new TCPConnectionEventArgs("Receieved: " + temp));
-                    inQueue.Add(data);
+                    int i = 0;
+                    byte[] bytesToRead = new byte[client.ReceiveBufferSize];
+                    string temp;
+                    try
+                    {
+                        while ((i = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize - 1)) != 0 && !_quit)
+                        {
+                            temp = "";
+                            for (int j = 0; j < i; j++)
+                                temp += bytesToRead[j].ToString() + "|";
+                            if (flag == 0)
+                            {
+                                OnUIMessage(new TCPConnectionEventArgs("Receieved: " + temp));
+                                flag = 1;
+                            }
+                            Array.Resize(ref bytesToRead, i);
+                            inQueue.Add(bytesToRead);
+                            Array.Resize(ref bytesToRead, client.ReceiveBufferSize);
+                            OnMessageReceived(new TCPConnectionEventArgs(""));
+                        }
+                    }
+                    catch(IOException)//just readtimeout nothing to worry about
+                    { }
                 }
             }
+            catch(Exception e)
+            {
+                OnUIMessage(new TCPConnectionEventArgs(e.Message));
+                _quit = true;
+                exitHandle.Set();
+            }
+
         }
         public void Write()
         {
             try
             {
-                while (true && _quit!=true)
+                if (Thread.CurrentThread.Name == null)
                 {
+                    Thread.CurrentThread.Name = "WriteThread";
+                }
+                readThread = new Thread(() => Read());
+                readThread.IsBackground = true;
+                readThread.Start();
+                while (_quit!=true)
+                {
+                    sendHandle.WaitOne();
                     if (outQueue._queue.Count() > 0)
                     {
-                        string toSend = outQueue.Remove();
-                        byte[] bytesToSend = new byte[toSend.Length];
-                        bytesToSend=Encoding.ASCII.GetBytes(toSend);
-                        toSend = "";
-                        foreach (byte b in bytesToSend)
-                            toSend += b.ToString();
-                        OnUIMessage(new TCPConnectionEventArgs("Sending: "+toSend));
-                        nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                        string toSendS="";
+                        byte[] toSend = outQueue.Remove();
+                        foreach (byte b in toSend)
+                            toSendS += b.ToString();
+                        //OnUIMessage(new TCPConnectionEventArgs("Sending: "+toSendS));
+                        nwStream.WriteTimeout=1000;
+                        nwStream.Write(toSend, 0, toSend.Length);
+                        if (toSend.Length == 1 && toSend[0] == 0)
+                            return;
                     }
-                    Thread.Sleep(200);
                 }
                 
             }
-            catch (Exception e)
+            catch(SocketException e)
             {
-                OnUIMessage(new TCPConnectionEventArgs("Błąd w wątku TCP"+e.ToString()));
+                OnUIMessage(new TCPConnectionEventArgs("Cannot Write to the socket, error code: " + e.Message));
+            }
+            catch (Exception)
+            {
+                OnUIMessage(new TCPConnectionEventArgs("Unknown error occured during socket writing"));
             }
             finally
             {
+                _quit = true;
+                readThread.Join();
                 Close();
-                if(client!=null) client.Close();
             }
         }
     }

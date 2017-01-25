@@ -1,105 +1,162 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Threading;
+
 
 namespace projekt_roboty
 {
      public class AvaibleRobots
     {
         public  List<Robot> robotList;
-        public AvaibleRobots() { robotList = new List<Robot>(); }
-        public AvaibleRobots(string tcpString)
+        enum State { idc, waitingForIDs, waitingForLoc };
+        private delegate void Handler(string str);
+        public event EventHandler RobotListUpdated;
+        TCPConnection connection;
+        State currentState;
+        
+        public AvaibleRobots(TCPConnection connection)
         {
-
-            if (tcpString.Length < 4 || tcpString[0] != '[' || tcpString[tcpString.Length] != ']' || tcpString.Substring(1, 2) != "49") //check formating
-                throw new Exception("Parsing string failed: "+tcpString);
-            tcpString = tcpString.Substring(3, tcpString.Length-1);
-            int numberOfRobots = tcpString.Length/2;
-            robotList = new List<Robot>(numberOfRobots);
-            int i = 0;
-            foreach(Robot robot in robotList)
+            this.connection = connection;
+            currentState = State.idc;
+            connection.MessageReceived += new EventHandler(queue_OnNewelementInQueue);
+            robotList = new List<Robot>(10);
+             for (int i = 0; i < 10; i++)
             {
-                robot.id = int.Parse(tcpString.Substring(0+i, 1+i));
-                i+=2;
+                robotList.Add(new Robot(i+1));
             }
         }
-        public void UpdateFromString(string tcpString)
+
+        private void queue_OnNewelementInQueue(object sender, EventArgs e)
         {
-            //TODO move some functionality to Robot class(encode data)
-            //check whether string begins with 4
-            if (tcpString.Length < 4 || tcpString[0] != '[' || tcpString[tcpString.Length] != ']' || tcpString.Substring(1, 2) != "04") //check formating, there could be the only 4
-                throw new Exception("Parsing string failed: " + tcpString);
-            tcpString = tcpString.Substring(3, tcpString.Length - 1); //so there wil be2
-            int numberOfRobots = tcpString.Length / 14;
-            for(int i=0,j=0;i<numberOfRobots;i++,j+=28)
+                Decode(connection.ReadIncomeQueue());
+        }
+        
+        private void OnRobotListUpdated(EventArgs e)
+        {
+            RobotListUpdated?.Invoke(this, e);
+        }
+        public int SetMotorsOffline(int id, float leftMotor, float rightMotor)
+        {
+            if(id==-1)
             {
-                Robot tempRobot = new Robot();
-                string singleRobotData = tcpString.Substring(0 +j, 27);
-                tempRobot.id = int.Parse(singleRobotData.Substring(0,2));
-                tempRobot.flag = int.Parse(singleRobotData.Substring(2, 2));
-                //<Xmm>
-                byte[] temp = new byte[4];
-                for (int a = 0,b=0; a < 4; a++,b+=2)
+                foreach(Robot robot in robotList)
                 {
-                    temp[a] = byte.Parse(singleRobotData.Substring(4+b, 2), System.Globalization.NumberStyles.HexNumber); 
+                    if (robot.controlable == 1)
+                    {
+                        robot.leftEngine = leftMotor;
+                        robot.rightEngine = rightMotor;
+                        OnRobotListUpdated(new EventArgs());
+                        return 0;
+                    }
                 }
-                if (!BitConverter.IsLittleEndian)
+            }
+            if (id > 0 && id <= 10)
+            {
+                if (robotList[id].controlable == 0)
+                    return -1;
+                robotList[id].leftEngine = leftMotor;
+                robotList[id].rightEngine = rightMotor;
+                OnRobotListUpdated(new EventArgs());
+                return 0;
+            }
+            else
+                return -1;
+        }
+        public int SetMotorsOnline(int id, float leftMotor, float rightMotor) //TODO check it
+        {
+            if (SetMotorsOffline(id, leftMotor, rightMotor) == 0)
+            {
+                List<byte> command = new List<byte>();
+                command.Add(5);
+                foreach (Robot robot in robotList)
                 {
-                    Array.Reverse(temp);
-                    tempRobot.Xmm = BitConverter.ToSingle(temp,0);
+                    if (robot.controlable == 1)
+                    {
+                        command.AddRange(robot.encodeData());
+                    }
+                }
+                byte[] commandb = command.ToArray();
+                //connection.outQueue.Clear();
+                connection.Send(commandb);
+                return 0;
+            }
+            else return -1;
+        }
+        private void UpdateFromString(byte[] btcp)
+        {
+            //
+
+            if (btcp[0] == 4)
+            {
+                for (int i = 0, j = 0; i < robotList.Count; i++, j += 14)
+                {
+                    ArraySegment<byte> segm = new ArraySegment<byte>(btcp, 1 + j, 14);
+                    robotList[i].decodeData(segm);
+
+                }
+            }
+            else {
+                for (int i = 0, j = 0; i < robotList.Count; i++, j += 14)
+                {
+                    ArraySegment<byte> segm = new ArraySegment<byte>(btcp, 0 + j, 14);
+                    robotList[i].decodeData(segm);
+
+                }
+            }
+            OnRobotListUpdated(new EventArgs());
+        }
+        private void SetControlableRobotsIDs(byte[] btcp)
+        {
+            int i = 1;
+            if (btcp[0] == 2)
+                i = 2;
+            for(;i<btcp.Length;i++)
+            {
+                robotList[btcp[i]-1].controlable=1;
+            }
+            OnRobotListUpdated(new EventArgs());
+        }
+        public void Decode(byte[] data)
+        {    
+            {
+                if (data.Length == 1 && currentState == State.idc)
+                {
+                    switch (data[0])
+                    {
+                        case 2: currentState = State.waitingForIDs; break;
+                        case 4: currentState = State.waitingForLoc; break;
+                        case 6: currentState = State.idc; break;
+                        default: currentState = State.idc; throw (new Exception("Nierozpoznane ID w pakiecie!"));
+                    }
                 }
                 else
-                    tempRobot.Xmm = BitConverter.ToSingle(temp, 0);
-                //</Xmm>
-                //<Ymm>
-                for (int a = 0, b = 0; a < 4; a++, b += 2)
                 {
-                    temp[a] = byte.Parse(singleRobotData.Substring(12 + b, 2), System.Globalization.NumberStyles.HexNumber); 
+                    switch (currentState)
+                    {
+                        case State.waitingForIDs: SetControlableRobotsIDs(data); currentState = State.idc; break;
+                        case State.waitingForLoc: UpdateFromString(data); currentState = State.idc; break;
+                        case State.idc:
+                            {
+                                if (data[0] == 4)
+                                    UpdateFromString(data);
+                                else if (data[0] == 2)
+                                    SetControlableRobotsIDs(data);
+                                else
+                                    throw (new Exception("Nierozpoznano pakietu z danymi debug"));
+                                currentState = State.idc;
+                                break;
+                            }
+                        default:
+                            {
+                                currentState = State.idc; throw (new Exception("Nierozpoznano pakietu z danymi"));
+                            }
+                    }
                 }
-                if (!BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(temp);
-                    tempRobot.Ymm = BitConverter.ToSingle(temp, 0);
-                }
-                else
-                    tempRobot.Ymm = BitConverter.ToSingle(temp, 0);
-                //</Ymm>
-                //<angle>
-                for (int a = 0, b = 0; a < 4; a++, b += 2)
-                {
-                    temp[a] = byte.Parse(singleRobotData.Substring(20 + b, 2), System.Globalization.NumberStyles.HexNumber); 
-                }
-                if (!BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(temp);
-                    tempRobot.angle = BitConverter.ToSingle(temp, 0);
-                }
-                else
-                    tempRobot.angle = BitConverter.ToSingle(temp, 0);
-                //</angle>
-                var foo = new RobotSearch(tempRobot.id);
-                int position= robotList.FindIndex(foo.equals);
-                robotList[position] = tempRobot;
 
             }
-        }
-        public DataTable GetDataTable()
-        { 
-            DataTable table = new DataTable();
-            table.Columns.Add("ID");
-            table.Columns.Add("Axis X[mm]");
-            table.Columns.Add("Axis Y[mm]");
-            table.Columns.Add("Angle [deg]");
-            table.Columns.Add("LM");
-            table.Columns.Add("RM");
-            foreach(Robot robot in robotList)
-            {
-               table.Rows.Add(robot.id.ToString(), robot.Xmm.ToString(), robot.Ymm.ToString(), robot.angle.ToString(), robot.leftEngine.ToString(), robot.rightEngine.ToString());
-            }
-            return table;
         }
     }
  

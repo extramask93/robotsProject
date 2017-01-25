@@ -5,16 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:projekt_roboty"
         mc:Ignorable="d"
-        Title="Stol" Height="465.246" Width="406.26">
+        Title="Stol" Height="830.954" Width="1142.516"
+        KeyDown="Window_KeyDown_1"
+        KeyUp="Window_KeyUp_1">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="83*"/>
             <ColumnDefinition Width="315*"/>
         </Grid.ColumnDefinitions>
-        <Canvas Name="canvas1" HorizontalAlignment="Left" Height="400" Background="Black" Margin="0,0,-2,0" VerticalAlignment="Top" Width="400" PreviewMouseDown="canvas1_PreviewMouseDown" Grid.ColumnSpan="2">
-            <Ellipse Name="bola" Canvas.Left="130" Canvas.Top="79" Width="20" Height="20" Fill="White"  />
+        <Canvas Name="canvas1" HorizontalAlignment="Left" Height="800" Background="Black" Margin="0,0,-2,0" VerticalAlignment="Top" Width="800"  Grid.ColumnSpan="2">
         </Canvas>
-        <TextBox Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="3,406,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="331" Grid.ColumnSpan="2"/>
+        <Button Content="Clear" Grid.Column="1" HorizontalAlignment="Left" Margin="684,177,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" RenderTransformOrigin="1.243,18.908"/>
+        <Label Content="ML:" Grid.Column="1" HorizontalAlignment="Left" Margin="639,119,0,0" VerticalAlignment="Top" Width="44"/>
+        <Label Name="labell" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="684,119,0,0" VerticalAlignment="Top" Width="44"/>
+        <Label Content="MP:" Grid.Column="1" HorizontalAlignment="Left" Margin="759,119,0,0" VerticalAlignment="Top" Width="44"/>
+        <Label Name="labelr" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="804,119,0,0" VerticalAlignment="Top" Width="44"/>
+        <Label Content="Motor Stats:" Grid.Column="1" HorizontalAlignment="Left" Margin="680,79,0,0" VerticalAlignment="Top" Width="104"/>
+        <Label Content="Select Robot to controll:" Grid.Column="1" HorizontalAlignment="Left" Margin="596,-1,0,0" VerticalAlignment="Top" Width="189"/>
+        <ComboBox Name ="robotCombo" Grid.Column="1" HorizontalAlignment="Left" Margin="608,24,0,0" VerticalAlignment="Top" Width="120"/>
 
     </Grid>
 </Window>

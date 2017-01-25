@@ -5,24 +5,64 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:projekt_roboty"
         mc:Ignorable="d"
-        Title="Roboty projekt" Height="350" Width="525">
-    <TabControl HorizontalAlignment="Left" Height="318" VerticalAlignment="Top" Width="515">
-        <TabItem Header="TabItem">
-            <Grid Background="#FFE5E5E5">
-                <Button Content="Initialize connection" HorizontalAlignment="Left" Margin="6,54,0,0" VerticalAlignment="Top" Width="139" Click="Button_Click_4"/>
-                <TextBox Name="textBox1" HorizontalAlignment="Left" Height="85" Margin="226,32,0,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" Width="273"/>
-                <TextBox Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="10,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="450"/>
-                <Button Content="Run Table" HorizontalAlignment="Left" Margin="424,260,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
-                <Button Content="Connect" HorizontalAlignment="Left" Height="22" Margin="6,24,0,0" VerticalAlignment="Top" Width="79" Click="Button_Click_1"/>
-                <Button Content="GetLocations" HorizontalAlignment="Left" Height="24" Margin="6,79,0,0" VerticalAlignment="Top" Width="139" Click="Button_Click"/>
-                <Label Content="Debug Window:" HorizontalAlignment="Left" Margin="226,3,0,0" VerticalAlignment="Top" Height="29" Width="221"/>
-                <Button Content="Disconnect" HorizontalAlignment="Left" Height="22" Margin="110,24,0,0" VerticalAlignment="Top" Width="79" Click="Button_Click_5"/>
-                <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="10,230,0,0" VerticalAlignment="Top" Width="75" Click="button_Click_2"/>
+        Title="Roboty projekt" Height="372.258" Width="643.433">
+    <TabControl HorizontalAlignment="Left" Height="346" VerticalAlignment="Top" Width="678">
+        <TabItem Header="Connection">
+            <Grid Background="#FFE5E5E5" Margin="0,0,41,-5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="36*"/>
+                    <ColumnDefinition Width="48*"/>
+                    <ColumnDefinition Width="0*"/>
+                    <ColumnDefinition Width="547*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Initialize connection" HorizontalAlignment="Left" Margin="20,169,0,0" VerticalAlignment="Top" Width="139" Click="Button_Click_4" Grid.ColumnSpan="4" Height="20"/>
+                <TextBox Name="textBox1" HorizontalAlignment="Left" Height="85" Margin="145,32,0,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" Width="274" Grid.Column="3"/>
+                <Button Content="Run Visualization" HorizontalAlignment="Left" Margin="343,260,0,0" VerticalAlignment="Top" Width="117" Click="Button_Click_3" Grid.Column="3" Height="20"/>
+                <Button Name="conButton" Content="Connect" HorizontalAlignment="Left" Height="22" Margin="6,128,0,0" VerticalAlignment="Top" Width="78" Click="Button_Click_1" Grid.ColumnSpan="2"/>
+                <Label Content="Debug Window:" HorizontalAlignment="Left" Margin="145,3,0,0" VerticalAlignment="Top" Height="29" Width="222" Grid.Column="3"/>
+                <Button Content="Disconnect" HorizontalAlignment="Left" Height="22" Margin="24,128,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click_5" Grid.Column="3"/>
+                <Label Content="Mode:" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="26" Width="44"/>
+                <Label Content="Number of robots:" HorizontalAlignment="Left" Margin="25,11,0,0" VerticalAlignment="Top" Grid.Column="3" Height="26" Width="108"/>
+                <ComboBox Name="robotNrComboBox" HorizontalAlignment="Left" Margin="67,41,0,0" VerticalAlignment="Top" Width="46" SelectedIndex="0" Grid.Column="3" Height="22">
+                    <ComboBoxItem  Name="cbi1">1</ComboBoxItem>
+                    <ComboBoxItem  Name="cbi2">2</ComboBoxItem>
+                    <ComboBoxItem  Name="cbi3">3</ComboBoxItem>
+                    <ComboBoxItem  Name="cbi4">4</ComboBoxItem>
+                    <ComboBoxItem  Name="cbi5">5</ComboBoxItem>
+                </ComboBox>
+                <ComboBox Name="modeComboBox" HorizontalAlignment="Left" Margin="1,41,0,0" VerticalAlignment="Top" Width="114" SelectedIndex="1" Grid.ColumnSpan="4" Height="22">
+                    <ComboBoxItem  Name="cbmi0">Controll</ComboBoxItem>
+                    <ComboBoxItem  Name="cbmi1">Mon+Con</ComboBoxItem>
+                    <ComboBoxItem  Name="cbmi2">Monitor</ComboBoxItem>
+                </ComboBox>
+                <TextBox Name="textBoxIP" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="7,67,0,0" TextWrapping="Wrap" Text="192.168.2." VerticalAlignment="Top" Width="120" Grid.ColumnSpan="3"/>
+                <TextBox x:Name="textBoxPORT" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="7,87,0,0" TextWrapping="Wrap" Text="50131" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="3"/>
+                <Label Content="IP:" HorizontalAlignment="Left" Margin="0,64,0,0" VerticalAlignment="Top" Height="26" Width="23"/>
+                <Label Content="PORT:" HorizontalAlignment="Left" Margin="0,85,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="26" Width="41"/>
             </Grid>
         </TabItem>
-        <TabItem Header="TabItem">
-            <Grid Background="#FFE5E5E5">
-                <DataGrid Name="dataGrid1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="257" Width="489"/>
+        <TabItem Header="Robots Data">
+            <Grid Background="#FFE5E5E5" Margin="0,0,41,-4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="41*"/>
+                    <ColumnDefinition Width="31*"/>
+                    <ColumnDefinition Width="544*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Run Visualization" HorizontalAlignment="Left" Margin="433,290,0,0" VerticalAlignment="Top" Width="117" Click="Button_Click_3" Grid.Column="2"/>
+                <ListView Name="robotListView" HorizontalAlignment="Left" Height="265" VerticalAlignment="Top" Width="617" Grid.ColumnSpan="3" Margin="1">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn  Header="Id" Width="20" DisplayMemberBinding="{Binding id}" />
+                            <GridViewColumn Header="Controllable" Width="80" DisplayMemberBinding="{Binding controlable}" />
+                            <GridViewColumn Header="Detected" Width="80" DisplayMemberBinding="{Binding detected}" />
+                            <GridViewColumn Header="Xmm" Width="90" DisplayMemberBinding="{Binding Xmm}" />
+                            <GridViewColumn Header="Ymm" Width="90" DisplayMemberBinding="{Binding Ymm}" />
+                            <GridViewColumn Header="Angle" Width="90" DisplayMemberBinding="{Binding angle}" />
+                            <GridViewColumn Header="Left" Width="80" DisplayMemberBinding="{Binding leftEngine}" />
+                            <GridViewColumn Header="Right" Width="80" DisplayMemberBinding="{Binding rightEngine}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </Grid>
         </TabItem>
     </TabControl>
